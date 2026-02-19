@@ -29,6 +29,8 @@ const SOURCE_MAP = {
     "jeju": { name: "제주도청", link: "https://www.jeju.go.kr/news/news/law/law.htm" }
 };
 
+let analysisChart = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Data Load
     let archive = loadArchive();
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderFeed(archive);
     updateStats(archive);
+    initAnalysisChart(archive);
 
     // 2. Region Filter Logic
     const filters = document.querySelectorAll('#regionFilter li');
@@ -82,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const keyword = searchInput.value.toLowerCase();
             filterFeed(region, keyword);
             updateStats(archive);
+            updateAnalysisChart(archive);
             
             btnSync.disabled = false;
             btnSync.textContent = "🔄 데이터 동기화";
@@ -103,26 +107,120 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Theme Sync (if user toggles theme on other page)
     const currentTheme = localStorage.getItem('theme') || 'light';
-    if (currentTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('btnTheme').textContent = '☀️';
-    }
+    applyThemeStatus(currentTheme);
     
-    // Theme Toggle Logic (copied from main.js for consistency)
+    // Theme Toggle Logic
     const themeBtn = document.getElementById('btnTheme');
     themeBtn.addEventListener('click', () => {
-        const theme = document.documentElement.getAttribute('data-theme');
-        if (theme === 'dark') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            themeBtn.textContent = '🌙';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            themeBtn.textContent = '☀️';
-        }
+        const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyThemeStatus(theme);
+        localStorage.setItem('theme', theme);
     });
 });
+
+function applyThemeStatus(theme) {
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('btnTheme').textContent = '☀️';
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('btnTheme').textContent = '🌙';
+    }
+    // Update chart colors if it exists
+    if (analysisChart) {
+        updateChartTheme(theme);
+    }
+}
+
+function initAnalysisChart(data) {
+    const ctx = document.getElementById('analysisChart').getContext('2d');
+    const counts = getSmartFarmCounts(data);
+    const theme = localStorage.getItem('theme') || 'light';
+    const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+    const textColor = theme === 'dark' ? '#f8fafc' : '#333333';
+
+    analysisChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: counts.labels,
+            datasets: [{
+                label: '스마트팜 관련 사업 수',
+                data: counts.values,
+                backgroundColor: 'rgba(0, 102, 255, 0.7)',
+                borderColor: 'rgba(0, 102, 255, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: textColor
+                    },
+                    grid: {
+                        color: gridColor
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: textColor
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function updateAnalysisChart(data) {
+    if (!analysisChart) return;
+    const counts = getSmartFarmCounts(data);
+    analysisChart.data.labels = counts.labels;
+    analysisChart.data.datasets[0].data = counts.values;
+    analysisChart.update();
+}
+
+function updateChartTheme(theme) {
+    const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+    const textColor = theme === 'dark' ? '#f8fafc' : '#333333';
+    
+    analysisChart.options.scales.y.ticks.color = textColor;
+    analysisChart.options.scales.y.grid.color = gridColor;
+    analysisChart.options.scales.x.ticks.color = textColor;
+    analysisChart.update();
+}
+
+function getSmartFarmCounts(data) {
+    // Count items where category is "스마트팜" per region
+    const counts = {};
+    // Only use regional governments (not 'all')
+    const regionalKeys = Object.keys(REGION_NAMES).filter(k => k !== 'all');
+    
+    regionalKeys.forEach(k => counts[k] = 0);
+    
+    data.forEach(item => {
+        if (item.category === '스마트팜' && counts[item.region] !== undefined) {
+            counts[item.region]++;
+        }
+    });
+
+    return {
+        labels: regionalKeys.map(k => REGION_NAMES[k]),
+        values: regionalKeys.map(k => counts[k])
+    };
+}
 
 function loadArchive() {
     try {

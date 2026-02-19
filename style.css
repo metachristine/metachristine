@@ -220,6 +220,29 @@ body {
     margin-bottom: 24px;
 }
 
+.analysis-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.analysis-card .card-header {
+    margin-bottom: 24px;
+}
+
+.analysis-card h2 {
+    font-size: 20px;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.analysis-card .sub {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
 .feed-header h2 {
     font-size: 24px;
     color: var(--text-main);

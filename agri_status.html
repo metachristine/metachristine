@@ -65,6 +65,17 @@
         </aside>
 
         <section class="feed-section">
+            <!-- New Analysis Section -->
+            <div class="analysis-card fade-in" style="margin-bottom: 32px;">
+                <div class="card-header">
+                    <h2>📊 농정 분석: 스마트팜 추진 현황</h2>
+                    <p class="sub">지자체별 스마트팜 관련 사업 분포도</p>
+                </div>
+                <div class="chart-container" style="position: relative; height:300px; width:100%">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+            </div>
+
             <div class="feed-header">
                 <h2>최신 정책 및 뉴스</h2>
                 <div class="search-bar">
@@ -99,6 +110,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="status.js"></script>
 </body>
 </html>
