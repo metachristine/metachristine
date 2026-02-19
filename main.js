@@ -36,36 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. Roaming Quokka Logic
-    const roamer = document.getElementById('quokkaRoamer');
-    if (roamer) {
-        let x = Math.random() * (window.innerWidth - 60);
-        let y = Math.random() * (window.innerHeight - 60);
-        let dx = (Math.random() - 0.5) * 2; // velocity X
-        let dy = (Math.random() - 0.5) * 2; // velocity Y
-        
-        function roam() {
-            x += dx;
-            y += dy;
-            
-            // Bounce off left/right
-            if (x < 0 || x + 52 > window.innerWidth) {
-                dx *= -1;
-            }
-            // Bounce off top/bottom
-            if (y < 0 || y + 52 > window.innerHeight) {
-                dy *= -1;
-            }
-            
-            // Flip image horizontally based on direction
-            const flip = dx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
-            roamer.style.transform = `translate(${x}px, ${y}px) ${flip}`;
-            
-            requestAnimationFrame(roam);
-        }
-        roam();
-    }
-
     // 4. Simple Scroll Reveal Animation
     const observerOptions = {
         threshold: 0.1,

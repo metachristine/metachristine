@@ -116,26 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyThemeStatus(theme);
         localStorage.setItem('theme', theme);
     });
-
-    // 6. Roaming Quokka Logic
-    const roamer = document.getElementById('quokkaRoamer');
-    if (roamer) {
-        let x = Math.random() * (window.innerWidth - 60);
-        let y = Math.random() * (window.innerHeight - 60);
-        let dx = (Math.random() - 0.5) * 1.5;
-        let dy = (Math.random() - 0.5) * 1.5;
-        
-        function roam() {
-            x += dx;
-            y += dy;
-            if (x < 0 || x + 52 > window.innerWidth) dx *= -1;
-            if (y < 0 || y + 52 > window.innerHeight) dy *= -1;
-            const flip = dx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
-            roamer.style.transform = `translate(${x}px, ${y}px) ${flip}`;
-            requestAnimationFrame(roam);
-        }
-        roam();
-    }
 });
 
 function applyThemeStatus(theme) {
