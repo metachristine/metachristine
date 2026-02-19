@@ -1,16 +1,16 @@
 // Simulation of data fetching and management for the Agri-Status Dashboard
 
 const MOCK_DATA = [
-    { region: "chungnam", title: "2026년 농촌자원복합산업화 지원사업 공고", category: "지원사업", date: "2026-02-19", link: "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do" },
-    { region: "all", title: "2026년 청년농업인 영농정착지원사업 시행지침 안내", category: "청년농", date: "2026-02-18", link: "https://www.mafra.go.kr/mafra/293/subview.do" },
-    { region: "all", title: "2026년 농식품 벤처육성 지원사업(창업기업) 모집 공고", category: "벤처육성", date: "2026-02-18", link: "https://www.gg.go.kr/bbs/boardView.do?bsIdx=464&bIdx=102345" },
-    { region: "all", title: "2026년 「농업기술 산학협력지원사업」 공고", category: "기술개발", date: "2026-02-17", link: "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo" },
-    { region: "gyeonggi", title: "2025년 하반기 귀농 농업창업 및 주택구입 지원사업 신청 안내", category: "귀농지원", date: "2026-02-17", link: "https://www.yw.go.kr/www/selectBbsNttView.do?key=522&bbsNo=31&nttNo=154321" },
-    { region: "jeonnam", title: "스마트팜 혁신밸리 입주기업 모집 안내", category: "스마트팜", date: "2026-02-16", link: "https://www.jeonnam.go.kr/M7124/boardView.do?seq=2001" },
-    { region: "gyeongbuk", title: "경북 농특산물 쇼핑몰 '사이소' 입점 업체 모집", category: "유통", date: "2026-02-15", link: "https://www.cyso.co.kr/" },
-    { region: "jeju", title: "제주 감귤 수출 물류비 지원 사업 공고", category: "수출", date: "2026-02-14", link: "https://www.jeju.go.kr/news/news/law/law.htm" },
-    { region: "chungbuk", title: "과수 화상병 예방 약제 공급 계획 알림", category: "방역", date: "2026-02-13", link: "https://www.cheongju.go.kr/www/selectBbsNttView.do?key=279&bbsNo=40&nttNo=234567" },
-    { region: "gyeongnam", title: "농업인 안전재해보험 가입비 지원 안내", category: "보험", date: "2026-02-12", link: "https://www.gyeongnam.go.kr/board/view.do?boardId=BBS_0000001" }
+    { region: "chungnam", title: "2026년 농촌자원복합산업화 지원사업 공고", category: "지원사업", date: "2026-02-19", link: "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do", source: "비즈인포" },
+    { region: "all", title: "2026년 청년농업인 영농정착지원사업 시행지침 안내", category: "청년농", date: "2026-02-18", link: "https://www.mafra.go.kr/mafra/293/subview.do", source: "농림축산식품부" },
+    { region: "all", title: "2026년 농식품 벤처육성 지원사업(창업기업) 모집 공고", category: "벤처육성", date: "2026-02-18", link: "https://www.gg.go.kr/bbs/boardView.do?bsIdx=464&bIdx=102345", source: "경기도청" },
+    { region: "all", title: "2026년 「농업기술 산학협력지원사업」 공고", category: "기술개발", date: "2026-02-17", link: "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo", source: "농촌진흥청" },
+    { region: "gyeonggi", title: "2025년 하반기 귀농 농업창업 및 주택구입 지원사업 신청 안내", category: "귀농지원", date: "2026-02-17", link: "https://www.yw.go.kr/www/selectBbsNttView.do?key=522&bbsNo=31&nttNo=154321", source: "양평군청" },
+    { region: "jeonnam", title: "스마트팜 혁신밸리 입주기업 모집 안내", category: "스마트팜", date: "2026-02-16", link: "https://www.jeonnam.go.kr/M7124/boardView.do?seq=2001", source: "전남도청" },
+    { region: "gyeongbuk", title: "경북 농특산물 쇼핑몰 '사이소' 입점 업체 모집", category: "유통", date: "2026-02-15", link: "https://www.cyso.co.kr/", source: "경상북도" },
+    { region: "jeju", title: "제주 감귤 수출 물류비 지원 사업 공고", category: "수출", date: "2026-02-14", link: "https://www.jeju.go.kr/news/news/law/law.htm", source: "제주도청" },
+    { region: "chungbuk", title: "과수 화상병 예방 약제 공급 계획 알림", category: "방역", date: "2026-02-13", link: "https://www.cheongju.go.kr/www/selectBbsNttView.do?key=279&bbsNo=40&nttNo=234567", source: "청주시청" },
+    { region: "gyeongnam", title: "농업인 안전재해보험 가입비 지원 안내", category: "보험", date: "2026-02-12", link: "https://www.gyeongnam.go.kr/board/view.do?boardId=BBS_0000001", source: "경남도청" }
 ];
 
 const REGION_NAMES = {
@@ -19,9 +19,25 @@ const REGION_NAMES = {
     "gyeongbuk": "경북", "gyeongnam": "경남", "jeju": "제주"
 };
 
+const SOURCE_MAP = {
+    "bizinfo": { name: "비즈인포", link: "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do" },
+    "mafra": { name: "농림축산식품부", link: "https://www.mafra.go.kr/mafra/293/subview.do" },
+    "rda": { name: "농촌진흥청", link: "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo" },
+    "gg": { name: "경기도청", link: "https://www.gg.go.kr/bbs/board.do?bsIdx=464&menuId=2483" },
+    "jeonnam": { name: "전남도청", link: "https://www.jeonnam.go.kr/M7124/boardList.do" },
+    "gyeongnam": { name: "경남도청", link: "https://www.gyeongnam.go.kr/board/list.do?boardId=BBS_0000001" },
+    "jeju": { name: "제주도청", link: "https://www.jeju.go.kr/news/news/law/law.htm" }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Data Load
     let archive = loadArchive();
+    
+    // Check if current archive has source field, if not, reset for the new structure
+    if (archive.length > 0 && !archive[0].source) {
+        archive = [];
+    }
+
     if (archive.length === 0) {
         archive = MOCK_DATA;
         saveArchive(archive);
@@ -136,6 +152,7 @@ function renderFeed(data) {
             <div class="feed-meta">
                 <span class="badge ${item.region}">${REGION_NAMES[item.region] || item.region}</span>
                 <span class="category">${item.category}</span>
+                <span class="source">출처: <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.source}</a></span>
                 <span class="date">${item.date}</span>
             </div>
             <h3 class="feed-title"><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a></h3>
@@ -156,7 +173,8 @@ function filterFeed(region, keyword = "") {
     if (keyword) {
         filtered = filtered.filter(item => 
             item.title.toLowerCase().includes(keyword) || 
-            item.category.toLowerCase().includes(keyword)
+            item.category.toLowerCase().includes(keyword) ||
+            item.source.toLowerCase().includes(keyword)
         );
     }
     
@@ -164,10 +182,8 @@ function filterFeed(region, keyword = "") {
 }
 
 function updateStats(data) {
-    // Simple logic: "Today" is just a random number based on total length for demo
-    // In a real app, filtering by date would happen here.
     const total = data.length;
-    const today = Math.floor(Math.random() * 5) + 1; // Fake "new today" count
+    const today = Math.floor(Math.random() * 5) + 1; 
     
     document.getElementById('totalCount').textContent = total.toLocaleString();
     document.getElementById('todayCount').textContent = today;
@@ -185,20 +201,14 @@ function generateMockItem() {
         "축사 시설 현대화 자금 융자 지원",
         "귀농인의 집 입주자 모집 공고"
     ];
-    const realLinks = [
-        "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do",
-        "https://www.mafra.go.kr/mafra/293/subview.do",
-        "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo",
-        "https://www.gg.go.kr/bbs/board.do?bsIdx=464&menuId=2483",
-        "https://www.jeonnam.go.kr/M7124/boardList.do",
-        "https://www.gyeongnam.go.kr/board/list.do?boardId=BBS_0000001",
-        "https://www.jeju.go.kr/news/news/law/law.htm"
-    ];
+    
+    const sourceKeys = Object.keys(SOURCE_MAP);
+    const sKey = sourceKeys[Math.floor(Math.random() * sourceKeys.length)];
+    const source = SOURCE_MAP[sKey];
 
     const r = regions[Math.floor(Math.random() * regions.length)];
     const c = categories[Math.floor(Math.random() * categories.length)];
     const t = titles[Math.floor(Math.random() * titles.length)];
-    const l = realLinks[Math.floor(Math.random() * realLinks.length)];
     
     const today = new Date().toISOString().split('T')[0];
 
@@ -207,6 +217,7 @@ function generateMockItem() {
         title: `[${REGION_NAMES[r]}] ${t}`,
         category: c,
         date: today,
-        link: l
+        link: source.link,
+        source: source.name
     };
 }
