@@ -185,10 +185,20 @@ function generateMockItem() {
         "축사 시설 현대화 자금 융자 지원",
         "귀농인의 집 입주자 모집 공고"
     ];
+    const realLinks = [
+        "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do",
+        "https://www.mafra.go.kr/mafra/293/subview.do",
+        "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo",
+        "https://www.gg.go.kr/bbs/board.do?bsIdx=464&menuId=2483",
+        "https://www.jeonnam.go.kr/M7124/boardList.do",
+        "https://www.gyeongnam.go.kr/board/list.do?boardId=BBS_0000001",
+        "https://www.jeju.go.kr/news/news/law/law.htm"
+    ];
 
     const r = regions[Math.floor(Math.random() * regions.length)];
     const c = categories[Math.floor(Math.random() * categories.length)];
     const t = titles[Math.floor(Math.random() * titles.length)];
+    const l = realLinks[Math.floor(Math.random() * realLinks.length)];
     
     const today = new Date().toISOString().split('T')[0];
 
@@ -197,6 +207,6 @@ function generateMockItem() {
         title: `[${REGION_NAMES[r]}] ${t}`,
         category: c,
         date: today,
-        link: "#"
+        link: l
     };
 }
