@@ -5,17 +5,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
-            navbar.style.padding = '10px 0';
+            navbar.style.padding = '5px 0';
             navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
-            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
         } else {
-            navbar.style.padding = '20px 0';
+            navbar.style.padding = '15px 0';
             navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.05)';
-            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         }
     });
 
-    // 2. Simple Scroll Reveal Animation
+    // 2. Dark Mode Toggle Logic
+    const themeBtn = document.getElementById('btnTheme');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    // Apply initial theme
+    if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.textContent = '☀️';
+    }
+
+    themeBtn.addEventListener('click', () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            themeBtn.textContent = '🌙';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeBtn.textContent = '☀️';
+        }
+    });
+
+    // 3. Simple Scroll Reveal Animation
     const observerOptions = {
         threshold: 0.1,
         rootMargin: "0px 0px -50px 0px"
