@@ -349,6 +349,18 @@ footer {
     text-align: center;
 }
 
+.footer-quokka {
+    margin-bottom: 20px;
+}
+
+.footer-quokka img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 .footer-info h3 {
     font-size: 28px;
     margin-bottom: 16px;
