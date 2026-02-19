@@ -1,14 +1,932 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>명화 추천</title>
+  <style>
+    :root{
+      --bg:#0b0f1a;
+      --card:#121a2b;
+      --text:#e9eefc;
+      --muted:#aab6d6;
+      --accent:#6ea8ff;
+      --accent2:#7cf0c9;
+      --danger:#ff6b6b;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --card-bg: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+    [data-theme="light"] {
+      --bg:#f8f9fa;
+      --card:#ffffff;
+      --text:#212529;
+      --muted:#6c757d;
+      --accent:#0d6efd;
+      --accent2:#198754;
+      --danger:#dc3545;
+      --border:rgba(0,0,0,.10);
+      --shadow: 0 18px 50px rgba(0,0,0,.10);
+      --card-bg: #ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(110,168,255,.22), transparent 60%),
+                  radial-gradient(900px 700px at 90% 20%, rgba(124,240,201,.14), transparent 60%),
+                  radial-gradient(900px 700px at 50% 120%, rgba(255,107,107,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    [data-theme="light"] body {
+      background: var(--bg);
+    }
+    .wrap{
+      width: min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap:16px;
+    }
+    @media (max-width: 900px){
+      .wrap{grid-template-columns:1fr}
+    }
+    .card{
+      background: var(--card-bg);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius:18px;
+      overflow:hidden;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    header{
+      padding:22px 22px 14px 22px;
+      border-bottom:1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    h1{
+      margin:0 0 6px 0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:13px;
+    }
+    .panel{
+      padding:18px 22px 22px 22px;
+    }
+    .btns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:650;
+      letter-spacing:.2px;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+    }
+    [data-theme="light"] button {
+      background: rgba(0,0,0,.05);
+    }
+    button:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18); }
+    [data-theme="light"] button:hover { background: rgba(0,0,0,.08); border-color: rgba(0,0,0,.15); }
+    button:active{ transform: translateY(1px); }
+    .primary{
+      background: linear-gradient(90deg, rgba(110,168,255,.95), rgba(124,240,201,.85));
+      border: none;
+      color: #081024;
+    }
+    .primary:hover{ filter: brightness(1.02); }
+    .danger{
+      background: rgba(255,107,107,.12);
+      border-color: rgba(255,107,107,.25);
+      color: #ffd7d7;
+    }
+    [data-theme="light"] .danger { color: var(--danger); }
+    .danger:hover{ background: rgba(255,107,107,.18); }
+    .ghost{
+      background: transparent;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.15);
+      color: var(--muted);
+      font-size:12px;
+    }
+    [data-theme="light"] .pill { background: rgba(0,0,0,.05); }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,168,255,.15);
+    }
+    .dot2{ background: var(--accent2); box-shadow: 0 0 0 3px rgba(124,240,201,.12); }
+    .split{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .meta{
+      display:grid;
+      grid-template-columns: 120px 1fr;
+      gap:10px 12px;
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid var(--border);
+    }
+    .k{ color: var(--muted); font-size:12px; }
+    .v{ color: var(--text); font-size:13px; line-height:1.5; }
+    .quote{
+      margin-top:12px;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.65;
+      padding:12px 14px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      background: rgba(0,0,0,.12);
+    }
+    [data-theme="light"] .quote { border-color: rgba(0,0,0,.1); background: rgba(0,0,0,.02); }
+    .media{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+    .imgbox{
+      position:relative;
+      width:100%;
+      aspect-ratio: 4 / 3;
+      background: rgba(255,255,255,.04);
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    [data-theme="light"] .imgbox { background: rgba(0,0,0,.02); }
+    .imgbox img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      opacity:0;
+      transition: opacity .25s ease;
+    }
+    .imgbox img.loaded{ opacity:1; }
+    .imgfallback{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      text-align:center;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .mediaBody{
+      padding:16px 18px 18px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .title{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .byline{
+      margin:0;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    a{
+      color: var(--accent);
+      text-decoration:none;
+    }
+    a:hover{ text-decoration:underline; }
+    .mini{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:6px;
+    }
+    .stat{
+      font-size:12px;
+      color: var(--muted);
+    }
+    .fav{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      padding-top:10px;
+      border-top:1px solid var(--border);
+      margin-top:6px;
+    }
+    .favlist{
+      margin:0;
+      padding-left:18px;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.7;
+      max-height: 240px;
+      overflow:auto;
+    }
+    .sr{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+    #btnTheme{
+      font-size: 18px;
+      padding: 8px;
+      line-height: 1;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <main class="wrap">
+    <section class="card">
+      <header>
+        <div>
+          <h1>버튼을 누르면 명화를 추천해주는 페이지</h1>
+          <p class="sub">랜덤 추천, 중복 방지, 즐겨찾기, 위키 링크 제공</p>
+        </div>
+        <button id="btnTheme" title="테마 변경">🌙</button>
+      </header>
+      <div class="panel">
+        <div class="row" aria-label="상태 표시">
+          <span class="pill"><span class="dot"></span><span id="statusText">대기 중</span></span>
+          <span class="pill"><span class="dot dot2"></span><span id="seenText">추천 기록 0</span></span>
+          <span class="pill"><span id="favText">즐겨찾기 0</span></span>
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="btnPick">명화 추천받기</button>
+          <button id="btnPickNew">새로 추천</button>
+          <button class="ghost" id="btnCopy">추천 정보 복사</button>
+          <button class="danger" id="btnReset">기록 초기화</button>
+        </div>
+
+        <div class="quote" id="helper">
+          추천 버튼을 누르면 한 작품을 골라서 보여줍니다.
+          모두 한 번씩 본 뒤에는 다시 섞어서 추천합니다.
+        </div>
+
+        <div class="meta" aria-label="추천 메타 정보">
+          <div class="k">추천 방식</div><div class="v" id="modeText">중복 최소화 랜덤</div>
+          <div class="k">작품 데이터</div><div class="v" id="dataText">기본 목록 24개</div>
+          <div class="k">저장</div><div class="v">브라우저 로컬 저장소 사용</div>
+        </div>
+
+        <div class="fav" aria-label="즐겨찾기">
+          <div>
+            <div class="k">즐겨찾기 목록</div>
+            <div class="v">아래 목록은 클릭하면 해당 작품을 다시 불러옵니다</div>
+          </div>
+          <button id="btnClearFav" class="ghost">즐겨찾기 비우기</button>
+        </div>
+        <ol class="favlist" id="favList"></ol>
+      </div>
+    </section>
+
+    <section class="card media">
+      <div class="imgbox">
+        <img id="artImg" alt="" />
+        <div class="imgfallback" id="imgFallback">
+          아직 추천된 작품이 없습니다.<br/>왼쪽에서 추천 버튼을 눌러 주세요.
+        </div>
+      </div>
+      <div class="mediaBody">
+        <h2 class="title" id="artTitle">작품 제목</h2>
+        <p class="byline" id="artByline">작가, 연도, 소장처</p>
+
+        <div class="mini">
+          <span class="stat" id="artTag"></span>
+          <span class="stat" id="artEra"></span>
+        </div>
+
+        <p class="byline" id="artDesc" style="margin-top:4px;"></p>
+
+        <div class="btns" style="margin-top:4px;">
+          <button id="btnFav">즐겨찾기 추가</button>
+          <a id="btnWiki" href="#" target="_blank" rel="noreferrer">
+            <button class="ghost" type="button">위키로 보기</button>
+          </a>
+        </div>
+
+        <p class="sub" id="credit" style="margin-top:2px;">
+          이미지 출처는 위키미디어 공용입니다. 네트워크 환경에 따라 로딩이 실패할 수 있습니다.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const PAINTINGS = [
+      {
+        id: "mona_lisa",
+        title: "모나 리자",
+        artist: "레오나르도 다 빈치",
+        year: "1503~1506",
+        museum: "루브르 박물관",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "표정과 시선의 미묘함, 스푸마토 기법의 대표작으로 자주 언급됩니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%AA%A8%EB%82%98_%EB%A6%AC%EC%9E%90",
+        img: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Mona_Lisa.jpg"
+      },
+      {
+        id: "starry_night",
+        title: "별이 빛나는 밤",
+        artist: "빈센트 반 고흐",
+        year: "1889",
+        museum: "뉴욕 현대미술관",
+        tag: "후기 인상주의",
+        era: "네덜란드",
+        desc: "강한 붓질과 소용돌이치는 하늘로 감정의 리듬을 시각화한 작품입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%B3%84%EC%9D%B4_%EB%B9%9B%EB%82%98%EB%8A%94_%EB%B0%A4",
+        img: "https://upload.wikimedia.org/wikipedia/commons/e/ea/The_Starry_Night.jpg"
+      },
+      {
+        id: "girl_pearl",
+        title: "진주 귀걸이를 한 소녀",
+        artist: "요하네스 페르메이르",
+        year: "1665",
+        museum: "마우리츠하위스 미술관",
+        tag: "바로크",
+        era: "네덜란드",
+        desc: "빛과 피부 톤의 대비, 정지된 순간의 생동감으로 사랑받는 작품입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%A7%84%EC%A3%BC_%EA%B7%80%EA%B1%B8%EC%9D%B4%EB%A5%BC_%ED%95%9C_%EC%86%8C%EB%85%80",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Meisje_met_de_parel.jpg"
+      },
+      {
+        id: "the_scream",
+        title: "절규",
+        artist: "에드바르 뭉크",
+        year: "1893",
+        museum: "노르웨이 국립미술관 등",
+        tag: "표현주의",
+        era: "노르웨이",
+        desc: "불안과 공포의 감정을 상징적으로 압축한 이미지로 널리 알려져 있습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%A0%88%EA%B7%9C_(%EB%AD%89%ED%81%AC)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f4/The_Scream.jpg"
+      },
+      {
+        id: "birth_of_venus",
+        title: "비너스의 탄생",
+        artist: "산드로 보티첼리",
+        year: "1485~1486",
+        museum: "우피치 미술관",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "고전 신화를 기반으로 한 우아한 구도와 선이 특징입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%B9%84%EB%84%88%EC%8A%A4%EC%9D%98_%ED%83%84%EC%83%9D",
+        img: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Birth_of_Venus_Botticelli.jpg"
+      },
+      {
+        id: "guernica",
+        title: "게르니카",
+        artist: "파블로 피카소",
+        year: "1937",
+        museum: "레이나 소피아 미술관",
+        tag: "입체주의",
+        era: "스페인",
+        desc: "전쟁의 폭력과 비극을 거대한 흑백 화면으로 압도적으로 제시합니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EA%B2%8C%EB%A5%B4%EB%8B%88%EC%B9%B4_(%ED%94%BC%EC%B9%B4%EC%86%8C)",
+        img: "https://upload.wikimedia.org/wikipedia/en/7/74/PicassoGuernica.jpg"
+      },
+      {
+        id: "persistence_memory",
+        title: "기억의 지속",
+        artist: "살바도르 달리",
+        year: "1931",
+        museum: "뉴욕 현대미술관",
+        tag: "초현실주의",
+        era: "스페인",
+        desc: "녹아내리는 시계로 시간 감각의 뒤틀림을 상징적으로 표현합니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EA%B8%B0%EC%96%B5%EC%9D%98_%EC%A7%80%EC%86%8D",
+        img: "https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg"
+      },
+      {
+        id: "water_lilies",
+        title: "수련",
+        artist: "클로드 모네",
+        year: "1916 전후",
+        museum: "다수 소장처",
+        tag: "인상주의",
+        era: "프랑스",
+        desc: "빛과 색의 미세한 변화를 연작으로 탐구한 대표 주제입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%88%98%EB%A0%A8_(%EB%AA%A8%EB%84%A4)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Claude_Monet_-_Nymph%C3%A9as_-_Google_Art_Project.jpg"
+      },
+      {
+        id: "night_watch",
+        title: "야경",
+        artist: "렘브란트",
+        year: "1642",
+        museum: "레이크스 미술관",
+        tag: "바로크",
+        era: "네덜란드",
+        desc: "군중의 움직임과 빛의 연출로 서사를 만든 대형 집단 초상화입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%95%BC%EA%B2%BD_(%EB%A0%98%EB%B8%8C%EB%9E%80%ED%8A%B8)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/2/28/The_Nightwatch_by_Rembrandt.jpg"
+      },
+      {
+        id: "las_meninas",
+        title: "라스 메니나스",
+        artist: "디에고 벨라스케스",
+        year: "1656",
+        museum: "프라도 미술관",
+        tag: "바로크",
+        era: "스페인",
+        desc: "시선과 공간, 그림 속 그림의 장치로 회화의 본질을 묻는 작품입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%9D%BC%EC%8A%A4_%EB%A9%94%EB%8B%88%EB%82%98%EC%8A%A4",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Las_Meninas_01.jpg"
+      },
+      {
+        id: "american_gothic",
+        title: "아메리칸 고딕",
+        artist: "그랜트 우드",
+        year: "1930",
+        museum: "시카고 미술관",
+        tag: "리얼리즘",
+        era: "미국",
+        desc: "미국 중서부의 상징으로 자주 해석되는 대표 이미지입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%95%84%EB%A9%94%EB%A6%AC%EC%B9%B8_%EA%B3%A0%EB%94%95",
+        img: "https://upload.wikimedia.org/wikipedia/commons/7/71/Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg"
+      },
+      {
+        id: "the_kiss",
+        title: "키스",
+        artist: "구스타프 클림트",
+        year: "1907~1908",
+        museum: "벨베데레 미술관",
+        tag: "상징주의",
+        era: "오스트리아",
+        desc: "금박과 장식적 패턴으로 감정의 밀도를 극대화한 작품입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%ED%82%A4%EC%8A%A4_(%ED%81%B4%EB%A6%BC%ED%8A%B8)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/7/74/Gustav_Klimt_016.jpg"
+      },
+      {
+        id: "sunflowers",
+        title: "해바라기",
+        artist: "빈센트 반 고흐",
+        year: "1888",
+        museum: "다수 소장처",
+        tag: "후기 인상주의",
+        era: "네덜란드",
+        desc: "강한 색채 대비와 질감 표현으로 연작의 상징성을 만들었습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%ED%95%B4%EB%B0%94%EB%9D%BC%EA%B8%B0_(%EB%B0%98_%EA%B3%A0%ED%9D%90)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/4/47/Vincent_Willem_van_Gogh_128.jpg"
+      },
+      {
+        id: "school_of_athens",
+        title: "아테네 학당",
+        artist: "라파엘로",
+        year: "1509~1511",
+        museum: "바티칸 궁전",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "철학자들의 집합을 이상적 원근과 건축 속에 구성한 대표 벽화입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%95%84%ED%85%8C%EB%84%A4_%ED%95%99%EB%8B%B9",
+        img: "https://upload.wikimedia.org/wikipedia/commons/9/94/Sanzio_01.jpg"
+      },
+      {
+        id: "creation_of_adam",
+        title: "아담의 창조",
+        artist: "미켈란젤로",
+        year: "1512",
+        museum: "시스티나 성당",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "손끝이 닿기 직전의 긴장으로 상징적 장면을 구축했습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%95%84%EB%8B%B4%EC%9D%98_%EC%B0%BD%EC%A1%B0",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg"
+      },
+      {
+        id: "whistlers_mother",
+        title: "화가의 어머니",
+        artist: "제임스 애벗 맥닐 휘슬러",
+        year: "1871",
+        museum: "오르세 미술관",
+        tag: "사실주의",
+        era: "미국",
+        desc: "절제된 구도와 톤으로 정적이고 단단한 분위기를 만듭니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%ED%9C%98%EC%8A%AC%EB%9F%AC%EC%9D%98_%EC%96%B4%EB%A8%B8%EB%8B%88",
+        img: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Whistlers_Mother_high_res.jpg"
+      },
+      {
+        id: "the_great_wave",
+        title: "가나가와 앞바다의 큰 파도",
+        artist: "가쓰시카 호쿠사이",
+        year: "1831 전후",
+        museum: "다수 소장처",
+        tag: "우키요에",
+        era: "일본",
+        desc: "강렬한 파도 형상과 후지산의 대비로 널리 사랑받는 판화입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EA%B0%80%EB%82%98%EA%B0%80%EC%99%80_%EC%95%9E%EB%B0%94%EB%8B%A4%EC%9D%98_%ED%81%B0_%ED%8C%8C%EB%8F%84",
+        img: "https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg"
+      },
+      {
+        id: "nighthawks",
+        title: "밤샘꾼",
+        artist: "에드워드 호퍼",
+        year: "1942",
+        museum: "시카고 미술관",
+        tag: "리얼리즘",
+        era: "미국",
+        desc: "도시의 고독과 조명의 분위기를 극적으로 포착한 작품입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%B0%A4%EC%83%98%EA%BF%88",
+        img: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Nighthawks_by_Edward_Hopper_1942.jpg"
+      },
+      {
+        id: "liberty_leading",
+        title: "민중을 이끄는 자유의 여신",
+        artist: "외젠 들라크루아",
+        year: "1830",
+        museum: "루브르 박물관",
+        tag: "낭만주의",
+        era: "프랑스",
+        desc: "혁명과 상징을 결합한 대표적 역사화로 평가받습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EB%AF%BC%EC%A4%91%EC%9D%84_%EC%9D%B4%EB%81%84%EB%8A%94_%EC%9E%90%EC%9C%A0%EC%9D%98_%EC%97%AC%EC%8B%A0",
+        img: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg"
+      },
+      {
+        id: "thinker",
+        title: "생각하는 사람",
+        artist: "오귀스트 로댕",
+        year: "1904 주조본 등",
+        museum: "다수 소장처",
+        tag: "조각",
+        era: "프랑스",
+        desc: "원래는 지옥의 문과 연관된 인물로 구상된 것으로 알려져 있습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%83%9D%EA%B0%81%ED%95%98%EB%8A%94_%EC%82%AC%EB%9E%8C",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/The_Thinker%2C_Rodin.jpg"
+      },
+      {
+        id: "venus_urbino",
+        title: "우르비노의 비너스",
+        artist: "티치아노",
+        year: "1538",
+        museum: "우피치 미술관",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "시선, 질감, 공간의 연출로 이후 누드 회화 전통에 영향을 주었습니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%9A%B0%EB%A5%B4%EB%B9%84%EB%85%B8%EC%9D%98_%EB%B9%84%EB%84%88%EC%8A%A4",
+        img: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Titian%2C_Venus_of_Urbino%2C_1538.jpg"
+      },
+      {
+        id: "the_last_supper",
+        title: "최후의 만찬",
+        artist: "레오나르도 다 빈치",
+        year: "1495~1498",
+        museum: "산타 마리아 델레 그라치에",
+        tag: "르네상스",
+        era: "이탈리아",
+        desc: "원근과 제스처를 통해 장면의 긴장과 심리를 구성한 벽화입니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%B5%9C%ED%9B%84%EC%9D%98_%EB%A7%8C%EC%B0%AC",
+        img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Leonardo_da_Vinci_%28attrib%29_-_The_Last_Supper_-_WGA12732.jpg"
+      },
+      {
+        id: "the_swing",
+        title: "그네",
+        artist: "장 오노레 프라고나르",
+        year: "1767",
+        museum: "월리스 컬렉션",
+        tag: "로코코",
+        era: "프랑스",
+        desc: "가벼운 유희와 빛의 번짐이 로코코 미학을 상징합니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EA%B7%B8%EB%84%A4_(%ED%94%84%EB%9D%BC%EA%B3%A0%EB%82%98%EB%A5%B4)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/8/84/Jean-Honor%C3%A9_Fragonard_-_The_Swing_-_Google_Art_Project.jpg"
+      },
+      {
+        id: "impression_sunrise",
+        title: "인상, 해돋이",
+        artist: "클로드 모네",
+        year: "1872",
+        museum: "마르모탕 모네 미술관",
+        tag: "인상주의",
+        era: "프랑스",
+        desc: "인상주의라는 이름의 계기가 된 작품으로 자주 언급됩니다.",
+        wiki: "https://ko.wikipedia.org/wiki/%EC%9D%B8%EC%83%81%2C_%ED%95%B4%EB%8F%8B%EC%9D%B4",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/54/Claude_Monet%2C_Impression%2C_soleil_levant.jpg"
+      }
+    ];
+
+    const els = {
+      statusText: document.getElementById("statusText"),
+      seenText: document.getElementById("seenText"),
+      favText: document.getElementById("favText"),
+      modeText: document.getElementById("modeText"),
+      dataText: document.getElementById("dataText"),
+      helper: document.getElementById("helper"),
+
+      artImg: document.getElementById("artImg"),
+      imgFallback: document.getElementById("imgFallback"),
+      artTitle: document.getElementById("artTitle"),
+      artByline: document.getElementById("artByline"),
+      artDesc: document.getElementById("artDesc"),
+      artTag: document.getElementById("artTag"),
+      artEra: document.getElementById("artEra"),
+      btnWiki: document.getElementById("btnWiki"),
+
+      favList: document.getElementById("favList"),
+
+      btnPick: document.getElementById("btnPick"),
+      btnPickNew: document.getElementById("btnPickNew"),
+      btnCopy: document.getElementById("btnCopy"),
+      btnReset: document.getElementById("btnReset"),
+      btnFav: document.getElementById("btnFav"),
+      btnClearFav: document.getElementById("btnClearFav"),
+      btnTheme: document.getElementById("btnTheme"),
+    };
+
+    const store = {
+      getTheme: () => localStorage.getItem("painting_theme") || "dark",
+      setTheme: (theme) => localStorage.setItem("painting_theme", theme),
+      getSeen: () => {
+        try { return JSON.parse(localStorage.getItem("painting_seen") || "[]"); }
+        catch { return []; }
+      },
+      setSeen: (arr) => localStorage.setItem("painting_seen", JSON.stringify(arr)),
+      getFav: () => {
+        try { return JSON.parse(localStorage.getItem("painting_fav") || "[]"); }
+        catch { return []; }
+      },
+      setFav: (arr) => localStorage.setItem("painting_fav", JSON.stringify(arr)),
+      getLast: () => localStorage.getItem("painting_last") || "",
+      setLast: (id) => localStorage.setItem("painting_last", id),
+      clearAll: () => {
+        localStorage.removeItem("painting_seen");
+        localStorage.removeItem("painting_fav");
+        localStorage.removeItem("painting_last");
+      }
+    };
+
+    function setStatus(text){
+      els.statusText.textContent = text;
+    }
+
+    function updateCounters(){
+      const seen = store.getSeen();
+      const fav = store.getFav();
+      els.seenText.textContent = `추천 기록 ${seen.length}`;
+      els.favText.textContent = `즐겨찾기 ${fav.length}`;
+      els.dataText.textContent = `기본 목록 ${PAINTINGS.length}개`;
+    }
+
+    function shuffle(array){
+      const a = array.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickPainting(avoidSame){
+      const seen = store.getSeen();
+      const last = store.getLast();
+
+      const remaining = PAINTINGS.filter(p => !seen.includes(p.id));
+      let pool = remaining.length ? remaining : PAINTINGS;
+
+      if(avoidSame && pool.length > 1 && last){
+        const filtered = pool.filter(p => p.id !== last);
+        if(filtered.length) pool = filtered;
+      }
+
+      const picked = pool[Math.floor(Math.random() * pool.length)];
+      const nextSeen = remaining.length ? [...seen, picked.id] : [picked.id];
+      store.setSeen(nextSeen);
+      store.setLast(picked.id);
+
+      if(!remaining.length){
+        els.helper.textContent = "모든 작품을 한 번씩 추천했습니다. 이제 다시 섞어서 추천을 시작합니다.";
+        setStatus("재순환 시작");
+      }else{
+        els.helper.textContent = "추천 버튼을 누르면 한 작품을 골라서 보여줍니다. 모두 한 번씩 본 뒤에는 다시 섞어서 추천합니다.";
+        setStatus("추천 완료");
+      }
+
+      updateCounters();
+      renderPainting(picked);
+      renderFavList();
+    }
+
+    function renderPainting(p){
+      els.artTitle.textContent = p.title;
+      els.artByline.textContent = `${p.artist} · ${p.year} · ${p.museum}`;
+      els.artDesc.textContent = p.desc;
+      els.artTag.textContent = `장르: ${p.tag}`;
+      els.artEra.textContent = `지역: ${p.era}`;
+      els.btnWiki.href = p.wiki;
+
+      els.artImg.classList.remove("loaded");
+      els.artImg.alt = `${p.title} 이미지`;
+
+      els.imgFallback.style.display = "flex";
+      els.imgFallback.textContent = "이미지 로딩 중입니다.";
+
+      const img = new Image();
+      img.onload = () => {
+        els.artImg.src = p.img;
+        els.artImg.classList.add("loaded");
+        els.imgFallback.style.display = "none";
+      };
+      img.onerror = () => {
+        els.artImg.removeAttribute("src");
+        els.artImg.classList.remove("loaded");
+        els.imgFallback.style.display = "flex";
+        els.imgFallback.textContent = "이미지 로딩에 실패했습니다. 네트워크 상태를 확인하거나 위키 링크로 확인해 주세요.";
+      };
+      img.src = p.img;
+
+      const fav = store.getFav();
+      const isFav = fav.includes(p.id);
+      els.btnFav.textContent = isFav ? "즐겨찾기 해제" : "즐겨찾기 추가";
+    }
+
+    function copyCurrent(){
+      const last = store.getLast();
+      const p = PAINTINGS.find(x => x.id === last);
+      if(!p){
+        setStatus("복사할 추천이 없습니다");
+        return;
+      }
+      const text =
+        `오늘의 추천 명화\n` +
+        `제목: ${p.title}\n` +
+        `작가: ${p.artist}\n` +
+        `연도: ${p.year}\n` +
+        `소장처: ${p.museum}\n` +
+        `장르: ${p.tag}\n` +
+        `지역: ${p.era}\n` +
+        `링크: ${p.wiki}\n`;
+      navigator.clipboard.writeText(text).then(() => {
+        setStatus("클립보드에 복사됨");
+      }).catch(() => {
+        setStatus("복사 실패");
+      });
+    }
+
+    function toggleFav(){
+      const last = store.getLast();
+      if(!last){
+        setStatus("즐겨찾기 할 추천이 없습니다");
+        return;
+      }
+      const fav = store.getFav();
+      const idx = fav.indexOf(last);
+      if(idx >= 0){
+        fav.splice(idx,1);
+        setStatus("즐겨찾기 해제");
+      }else{
+        fav.unshift(last);
+        setStatus("즐겨찾기 추가");
+      }
+      store.setFav(fav);
+      updateCounters();
+      renderFavList();
+
+      const p = PAINTINGS.find(x => x.id === last);
+      if(p) renderPainting(p);
+    }
+
+    function renderFavList(){
+      const fav = store.getFav();
+      els.favList.innerHTML = "";
+
+      if(!fav.length){
+        const li = document.createElement("li");
+        li.textContent = "아직 즐겨찾기가 없습니다.";
+        els.favList.appendChild(li);
+        return;
+      }
+
+      for(const id of fav){
+        const p = PAINTINGS.find(x => x.id === id);
+        if(!p) continue;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#";
+        a.textContent = `${p.title} · ${p.artist}`;
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          store.setLast(p.id);
+          setStatus("즐겨찾기에서 불러옴");
+          renderPainting(p);
+        });
+        li.appendChild(a);
+        els.favList.appendChild(li);
+      }
+    }
+
+    function resetAll(){
+      store.clearAll();
+      setStatus("초기화 완료");
+      updateCounters();
+      renderFavList();
+
+      els.artTitle.textContent = "작품 제목";
+      els.artByline.textContent = "작가, 연도, 소장처";
+      els.artDesc.textContent = "";
+      els.artTag.textContent = "";
+      els.artEra.textContent = "";
+      els.btnWiki.href = "#";
+
+      els.artImg.removeAttribute("src");
+      els.artImg.classList.remove("loaded");
+      els.imgFallback.style.display = "flex";
+      els.imgFallback.textContent = "아직 추천된 작품이 없습니다. 왼쪽에서 추천 버튼을 눌러 주세요.";
+    }
+
+    function clearFav(){
+      store.setFav([]);
+      setStatus("즐겨찾기 비움");
+      updateCounters();
+      renderFavList();
+
+      const last = store.getLast();
+      const p = PAINTINGS.find(x => x.id === last);
+      if(p) renderPainting(p);
+    }
+
+    function toggleTheme(){
+      const current = store.getTheme();
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+    }
+
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      els.btnTheme.textContent = theme === "dark" ? "🌙" : "☀️";
+      store.setTheme(theme);
+    }
+
+    els.btnPick.addEventListener("click", () => pickPainting(true));
+    els.btnPickNew.addEventListener("click", () => pickPainting(true));
+    els.btnCopy.addEventListener("click", copyCurrent);
+    els.btnFav.addEventListener("click", toggleFav);
+    els.btnReset.addEventListener("click", resetAll);
+    els.btnClearFav.addEventListener("click", clearFav);
+    els.btnTheme.addEventListener("click", toggleTheme);
+
+    (function init(){
+      applyTheme(store.getTheme());
+      updateCounters();
+      renderFavList();
+
+      const last = store.getLast();
+      if(last){
+        const p = PAINTINGS.find(x => x.id === last);
+        if(p){
+          setStatus("이전 추천 불러옴");
+          renderPainting(p);
+        }
+      }else{
+        setStatus("대기 중");
+      }
+    })();
+  </script>
 </body>
 </html>
