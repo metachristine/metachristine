@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>농정현황 | 대한민국 농업 아카이브</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:8px; color:inherit;">
+                    <span class="logo-icon">🐝</span>
+                    <span class="logo-text">METAFARMERS</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">홈</a></li>
+                <li><a href="index.html#mission">미션</a></li>
+                <li><a href="index.html#technology">기술</a></li>
+                <li><a href="agri_status.html" class="active">농정현황</a></li>
+                <li><button id="btnTheme" title="테마 변경">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>대한민국 농정현황 아카이브</h1>
+            <p>전국 지자체의 농업 정책, 지원 사업, 보도자료를 실시간으로 수집하고 보관합니다.</p>
+        </div>
+    </header>
+
+    <main class="container dashboard">
+        <aside class="sidebar">
+            <div class="filter-box">
+                <h3>지역별 필터</h3>
+                <ul class="filter-list" id="regionFilter">
+                    <li class="active" data-region="all">전체 보기</li>
+                    <li data-region="gyeonggi">경기도</li>
+                    <li data-region="gangwon">강원도</li>
+                    <li data-region="chungbuk">충청북도</li>
+                    <li data-region="chungnam">충청남도</li>
+                    <li data-region="jeonbuk">전라북도</li>
+                    <li data-region="jeonnam">전라남도</li>
+                    <li data-region="gyeongbuk">경상북도</li>
+                    <li data-region="gyeongnam">경상남도</li>
+                    <li data-region="jeju">제주도</li>
+                </ul>
+            </div>
+            <div class="stats-box">
+                <h3>수집 현황</h3>
+                <div class="stat-item">
+                    <span class="label">오늘 수집</span>
+                    <span class="value" id="todayCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">총 아카이브</span>
+                    <span class="value" id="totalCount">0</span>
+                </div>
+                <button id="btnSync" class="btn primary full-width">🔄 데이터 동기화</button>
+            </div>
+        </aside>
+
+        <section class="feed-section">
+            <div class="feed-header">
+                <h2>최신 정책 및 뉴스</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="키워드 검색 (예: 스마트팜, 보조금)">
+                </div>
+            </div>
+            
+            <div class="feed-list" id="feedList">
+                <!-- Data will be populated by JS -->
+                <div class="loading">데이터를 불러오는 중입니다...</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="quokka-mascot" title="안녕! 나는 쿼카야">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Quokka_Adelaide_Zoo_2017.jpg/320px-Quokka_Adelaide_Zoo_2017.jpg" alt="Quokka">
+        <div class="speech-bubble">새로운 정책이 도착했어요!</div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>METAFARMERS</h3>
+                    <p>AI & Robotics for the Future of Agriculture</p>
+                    <p class="email">contact@metafarmers.ai</p>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Metafarmers Inc. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="status.js"></script>
+</body>
+</html>
