@@ -364,29 +364,22 @@ body {
 }
 
 /* Roaming Quokka Mascot */
-.roaming-quokka {
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    z-index: 1000;
-    pointer-events: none; /* Allows clicking elements behind it */
-    animation: roam 20s linear infinite;
-    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+.roamer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 52px;
+  height: 52px;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1000;
 }
 
-.roaming-quokka img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-@keyframes roam {
-    0%   { bottom: 10%; left: -10%; transform: scaleX(1); }
-    25%  { bottom: 20%; left: 30%; transform: scaleX(1) rotate(5deg); }
-    50%  { bottom: 15%; left: 110%; transform: scaleX(1); }
-    51%  { transform: scaleX(-1); } /* Turn around */
-    75%  { bottom: 5%; left: 50%; transform: scaleX(-1) rotate(-5deg); }
-    100% { bottom: 10%; left: -10%; transform: scaleX(-1); }
+.roamer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 
 /* Animations */
