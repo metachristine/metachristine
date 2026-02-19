@@ -1,33 +1,22 @@
 // Simulation of data fetching and management for the Agri-Status Dashboard
 
 const MOCK_DATA = [
-    { region: "gyeongbuk", title: "2026년 청년창업농 지원사업 추가 모집 공고", category: "지원사업", date: "2026-02-18", link: "#" },
-    { region: "jeonnam", title: "스마트팜 혁신밸리 입주기업 모집 안내", category: "스마트팜", date: "2026-02-18", link: "#" },
-    { region: "chungnam", title: "가축전염병 예방을 위한 방역 조치 강화", category: "축산", date: "2026-02-17", link: "#" },
-    { region: "gyeonggi", title: "친환경 농산물 인증비 지원 신청", category: "친환경", date: "2026-02-17", link: "#" },
-    { region: "jeju", title: "제주 감귤 수출 물류비 지원 사업 공고", category: "수출", date: "2026-02-16", link: "#" },
-    { region: "gangwon", title: "고랭지 배추 병해충 방제 긴급 지원", category: "재해대책", date: "2026-02-16", link: "#" },
-    { region: "jeonbuk", title: "농기계 임대사업소 주말 운영 확대", category: "농기계", date: "2026-02-15", link: "#" },
-    { region: "chungbuk", title: "귀농귀촌인을 위한 농업기술 교육생 모집", category: "교육", date: "2026-02-15", link: "#" },
-    { region: "gyeongnam", title: "시설원예 에너지 절감시설 지원사업", category: "시설원예", date: "2026-02-14", link: "#" },
-    { region: "gyeongbuk", title: "경북 농특산물 쇼핑몰 '사이소' 입점 업체 모집", category: "유통", date: "2026-02-14", link: "#" },
-    { region: "jeonnam", title: "유기농업 자재 지원 사업 신청 안내", category: "친환경", date: "2026-02-13", link: "#" },
-    { region: "chungnam", title: "여성농업인 행복바우처 카드 발급 안내", category: "복지", date: "2026-02-13", link: "#" },
-    { region: "jeju", title: "탄소중립 실현을 위한 저탄소 농업기술 보급", category: "환경", date: "2026-02-12", link: "#" },
-    { region: "gangwon", title: "산불 예방을 위한 영농부산물 파쇄 지원", category: "안전", date: "2026-02-12", link: "#" },
-    { region: "gyeonggi", title: "경기도 로컬푸드 직매장 설치 지원 사업", category: "유통", date: "2026-02-11", link: "#" },
-    { region: "jeonbuk", title: "청년 농업인 영농정착지원금 대상자 선정 결과", category: "청년농", date: "2026-02-11", link: "#" },
-    { region: "chungbuk", title: "과수 화상병 예방 약제 공급 계획 알림", category: "방역", date: "2026-02-10", link: "#" },
-    { region: "gyeongnam", title: "농업인 안전재해보험 가입비 지원", category: "보험", date: "2026-02-10", link: "#" },
-    { region: "jeonnam", title: "벼 재배면적 감축 협약 신청 접수", category: "정책", date: "2026-02-09", link: "#" },
-    { region: "gyeongbuk", title: "축산 악취 개선 사업 대상자 선정", category: "축산", date: "2026-02-09", link: "#" },
+    { region: "chungnam", title: "2026년 농촌자원복합산업화 지원사업 공고", category: "지원사업", date: "2026-02-19", link: "https://www.bizinfo.go.kr/saw/saw/selectGrantMain.do" },
+    { region: "all", title: "2026년 청년농업인 영농정착지원사업 시행지침 안내", category: "청년농", date: "2026-02-18", link: "https://www.mafra.go.kr/mafra/293/subview.do" },
+    { region: "all", title: "2026년 농식품 벤처육성 지원사업(창업기업) 모집 공고", category: "벤처육성", date: "2026-02-18", link: "https://www.gg.go.kr/bbs/boardView.do?bsIdx=464&bIdx=102345" },
+    { region: "all", title: "2026년 「농업기술 산학협력지원사업」 공고", category: "기술개발", date: "2026-02-17", link: "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo" },
+    { region: "gyeonggi", title: "2025년 하반기 귀농 농업창업 및 주택구입 지원사업 신청 안내", category: "귀농지원", date: "2026-02-17", link: "https://www.yw.go.kr/www/selectBbsNttView.do?key=522&bbsNo=31&nttNo=154321" },
+    { region: "jeonnam", title: "스마트팜 혁신밸리 입주기업 모집 안내", category: "스마트팜", date: "2026-02-16", link: "https://www.jeonnam.go.kr/M7124/boardView.do?seq=2001" },
+    { region: "gyeongbuk", title: "경북 농특산물 쇼핑몰 '사이소' 입점 업체 모집", category: "유통", date: "2026-02-15", link: "https://www.cyso.co.kr/" },
+    { region: "jeju", title: "제주 감귤 수출 물류비 지원 사업 공고", category: "수출", date: "2026-02-14", link: "https://www.jeju.go.kr/news/news/law/law.htm" },
+    { region: "chungbuk", title: "과수 화상병 예방 약제 공급 계획 알림", category: "방역", date: "2026-02-13", link: "https://www.cheongju.go.kr/www/selectBbsNttView.do?key=279&bbsNo=40&nttNo=234567" },
+    { region: "gyeongnam", title: "농업인 안전재해보험 가입비 지원 안내", category: "보험", date: "2026-02-12", link: "https://www.gyeongnam.go.kr/board/view.do?boardId=BBS_0000001" }
 ];
 
 const REGION_NAMES = {
-    "gyeonggi": "경기", "gangwon": "강원", "chungbuk": "충북",
+    "all": "전국", "gyeonggi": "경기", "gangwon": "강원", "chungbuk": "충북",
     "chungnam": "충남", "jeonbuk": "전북", "jeonnam": "전남",
-    "gyeongbuk": "경북", "gyeongnam": "경남", "jeju": "제주",
-    "all": "전국"
+    "gyeongbuk": "경북", "gyeongnam": "경남", "jeju": "제주"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -149,7 +138,7 @@ function renderFeed(data) {
                 <span class="category">${item.category}</span>
                 <span class="date">${item.date}</span>
             </div>
-            <h3 class="feed-title"><a href="${item.link}">${item.title}</a></h3>
+            <h3 class="feed-title"><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a></h3>
         `;
         list.appendChild(el);
     });
